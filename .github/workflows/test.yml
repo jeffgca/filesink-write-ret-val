@@ -51,7 +51,7 @@ jobs:
             ~/.bun/install/cache
             node_modules
             .eslintcache
-          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
           restore-keys: |
             ${{ runner.os }}-bun-
 
@@ -79,3 +79,14 @@ jobs:
       - name: Type check
         shell: sh
         run: bun tsc --noEmit
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.bun/install/cache
+            node_modules
+            .eslintcache
+          key: alpine-bun-${{ hashFiles('**/bun.lock') }}
+          restore-keys: |
+            alpine-bun-
