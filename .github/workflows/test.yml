@@ -60,7 +60,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: oven/bun:alpine
-    timeout-minutes: 5
+    timeout-minutes: 3
     steps:
       - uses: actions/checkout@v4
 
