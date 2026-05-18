@@ -32,18 +32,6 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
 
-      - name: Install dependencies
-        run: bun install
-
-      - name: Run tests
-        run: bun test
-
-      - name: Run linter
-        run: bun eslint . --cache
-
-      - name: Type check
-        run: bun tsc --noEmit
-
       - name: Cache dependencies
         uses: actions/cache@v4
         with:
@@ -55,6 +43,18 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-bun-
 
+      - name: Install dependencies
+        run: bun install
+
+      - name: Run tests
+        run: bun test
+
+      - name: Run linter
+        run: bun eslint . --cache
+
+      - name: Type check
+        run: bun tsc --noEmit
+
   test-alpine:
     name: Typecheck, Lint, and Tests (Alpine)
     runs-on: ubuntu-latest
@@ -63,6 +63,17 @@ jobs:
     timeout-minutes: 3
     steps:
       - uses: actions/checkout@v4
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.bun/install/cache
+            node_modules
+            .eslintcache
+          key: alpine-bun-${{ hashFiles('**/bun.lock') }}
+          restore-keys: |
+            alpine-bun-
 
       - name: Install dependencies
         shell: sh
@@ -79,14 +90,3 @@ jobs:
       - name: Type check
         shell: sh
         run: bun tsc --noEmit
-
-      - name: Cache dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.bun/install/cache
-            node_modules
-            .eslintcache
-          key: alpine-bun-${{ hashFiles('**/bun.lock') }}
-          restore-keys: |
-            alpine-bun-
