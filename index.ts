@@ -1,15 +1,14 @@
-import { Hello, type HelloOptions } from './lib/hello.js'
-import packageJson from './package.json' with { type: 'json' }
-import yargs from 'yargs'
-import { hideBin } from 'yargs/helpers'
+// import { describe, test, expect, beforeAll, afterAll } from 'bun:test'
+// import { mkdir, rm } from 'node:fs/promises'
+import { join } from 'node:path'
 
-const version =
-	typeof packageJson.version === 'string' ? packageJson.version : '0.0.0'
+// const FIXTURES = join(import.meta.dir, 'fixtures')
+const TMP = join(import.meta.dir, 'tmp')
 
-yargs(hideBin(process.argv)).version(version).alias('v', 'version').parse()
+console.log('TMP', TMP)
 
-const hello = new Hello({
-	greeting: 'Hi',
-} as HelloOptions)
-
-console.log(hello.greet('Jeff'))
+// const path = join(TMP, 'filesink-count.txt')
+// const writer = Bun.file(path).writer()
+// const n = writer.write('hello')
+// expect(typeof n).toBeDefined()
+// writer.end()
