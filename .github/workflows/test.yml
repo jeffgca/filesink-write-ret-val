@@ -8,6 +8,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -15,13 +18,30 @@ concurrency:
 jobs:
   test:
     name: Typecheck, Lint, and Tests
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
     timeout-minutes: 3
     steps:
       - uses: actions/checkout@v4
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.bun/install/cache
+            node_modules
+            .eslintcache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock*') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
 
       - name: Install dependencies
         run: bun install
@@ -35,6 +55,15 @@ jobs:
       - name: Type check
         run: bun tsc --noEmit
 
+  test-alpine:
+    name: Typecheck, Lint, and Tests (Alpine)
+    runs-on: ubuntu-latest
+    container:
+      image: oven/bun:alpine
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+
       - name: Cache dependencies
         uses: actions/cache@v4
         with:
@@ -42,6 +71,22 @@ jobs:
             ~/.bun/install/cache
             node_modules
             .eslintcache
-          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+          key: alpine-bun-${{ hashFiles('**/bun.lock*') }}
           restore-keys: |
-            ${{ runner.os }}-bun-
+            alpine-bun-
+
+      - name: Install dependencies
+        shell: sh
+        run: bun install
+
+      - name: Run tests
+        shell: sh
+        run: bun test
+
+      - name: Run linter
+        shell: sh
+        run: bun eslint . --cache
+
+      - name: Type check
+        shell: sh
+        run: bun tsc --noEmit
