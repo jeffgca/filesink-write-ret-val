@@ -39,7 +39,7 @@ jobs:
             ~/.bun/install/cache
             node_modules
             .eslintcache
-          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock*') }}
           restore-keys: |
             ${{ runner.os }}-bun-
 
@@ -71,7 +71,7 @@ jobs:
             ~/.bun/install/cache
             node_modules
             .eslintcache
-          key: alpine-bun-${{ hashFiles('**/bun.lock') }}
+          key: alpine-bun-${{ hashFiles('**/bun.lock*') }}
           restore-keys: |
             alpine-bun-
 
